@@ -1,3 +1,4 @@
+<!-- This is Profile editing page -->
 <h4>Editing my profile</h4>
 
 <form method='POST' action='/users/p_profile'>
@@ -19,11 +20,12 @@
     Reset Password:<br>
     <input type='password' name='password'>
     
-    <br><br>
+    <br>
     
+    <!-- error checking for blank fields -->
     <?php if(isset($error)): ?>
         <div class='error'>
-            Sign up failed. Please fill all the fields and submit again.
+            <h5>Operation failed! Please fill all the fields and submit again. </h5>
         </div>
         <br>
     <?php endif; ?>

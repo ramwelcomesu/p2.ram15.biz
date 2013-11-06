@@ -1,4 +1,5 @@
 
+<!-- This is the landing page content -->
 <h3>Hello, welcome to MiniTwitter!!</h1>
 
 <p>

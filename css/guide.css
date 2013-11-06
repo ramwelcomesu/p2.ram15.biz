@@ -1,10 +1,10 @@
-/*  to set page margins - used it in the body tag */
+/*  to set page margins - used in the body tag */
 #wrapper {    
 width: 750px;   
 margin: 0 auto; 
 } 
 
-/* to style to the header   */ 
+/* to style to the common page header   */ 
 #header { 
 top:0px; 
 left: 0px; 
@@ -29,7 +29,7 @@ text-align: center;
 /* styling menu - display in single line */
 #menu ul li { display: inline; }
 
-/* styling menu - text*/
+/* styling menu link text*/
 #menu ul li a
 {
 text-decoration: none;
@@ -48,8 +48,8 @@ background-color: #369;
 }
 
 
-/* to style to the header   */ 
-#content { 
+/* to style the page content   */ 
+#pcontent { 
 background-color: #aabbff; 
 padding: .4em 4em;
 b/order:2px solid;
@@ -58,25 +58,28 @@ box-shadow: 10px 10px 5px #888888;
 t/ext-align:center
 } 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*  not in use  */
-.center
-{
-margin-left:auto;
-margin-right:auto;
-width:70%;
-background-color:#b0e0e6;
+/* to style the text box on the Add Post page    */ 
+textarea {
+width: 500px;
+height: 6em;
 }
 
+/* to display error or warning text in red    */ 
+h5 {color:red;}
+
+/* to style table  */ 
+table
+{
+border-collapse:collapse;
+width:80%;
+}
+
+table, th, td
+{
+border: 1px solid blue;
+padding:5px;
+}
+
+/* to style the table alternative rows    */ 
+tr:nth-child(odd)	{ background-color:#eee; }
+tr:nth-child(even)	{ background-color:#fff; }

@@ -1,5 +1,5 @@
 
-
+<!-- This is Signup create and update confirmation page  -->
 <p>
 	Congratulations!!! Your Mini Twitter account has been created/updated successfully. 
 </p>

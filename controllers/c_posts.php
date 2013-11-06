@@ -10,11 +10,24 @@ class posts_controller extends base_controller {
         }
     }
 
-    public function add() {
+    # To let add new post
+    public function add($error = NULL) {
 
         # Setup view
         $this->template->content = View::instance('v_posts_add');
         $this->template->title   = "New Post";
+        
+        # Build the query to display only post related to the current user 
+        #This is one of the extra (+1) feature
+        $q = "SELECT * FROM posts WHERE user_id =".$this->user->user_id;
+        # Run the query
+        $posts = DB::instance(DB_NAME)->select_rows($q);
+
+        # Pass data to the View
+        $this->template->content->posts = $posts;
+
+        # Pass error data to the view
+        $this->template->content->error = $error;
 
         # Render template
         echo $this->template;
@@ -23,6 +36,10 @@ class posts_controller extends base_controller {
 
     public function p_add() {
 
+        if(empty($_POST['content'])) {
+           Router::redirect("/posts/add/error");
+        } 
+        
         # Associate this post with this user
         $_POST['user_id']  = $this->user->user_id;
 
@@ -34,13 +51,12 @@ class posts_controller extends base_controller {
         # Note we didn't have to sanitize any of the $_POST data because we're using the insert method which does it for us
         DB::instance(DB_NAME)->insert('posts', $_POST);
 
-        # Quick and dirty feedback
-        echo "Your post has been added. <a href='/posts/add'>Add another</a>";
-
+        # Redirect to the add page
+        Router::redirect("/posts/add");
     }
 
+    # to display list of all users with follow and unfollow option
     public function index() {
-
         # Set up the View
         $this->template->content = View::instance('v_posts_index');
         $this->template->title   = "All Posts";
@@ -71,36 +87,7 @@ class posts_controller extends base_controller {
 
     }
 
-
-    /*
-    public function index() {
-
-        # Set up the View
-        $this->template->content = View::instance('v_posts_index');
-        $this->template->title   = "Posts";
-
-        # Build the query
-        $q = "SELECT 
-                posts .* , 
-                users.first_name, 
-                users.last_name
-            FROM posts
-            INNER JOIN users 
-                ON posts.user_id = users.user_id";
-
-        # Run the query
-        $posts = DB::instance(DB_NAME)->select_rows($q);
-
-        # Pass data to the View
-        $this->template->content->posts = $posts;
-
-        # Render the View
-        echo $this->template;
-
-    }
-    */
-
-
+    # to display current logged in user's following posts
     public function users() {
 
         # Set up the View
@@ -149,7 +136,6 @@ class posts_controller extends base_controller {
 
         # Send them back
         Router::redirect("/posts/users");
-
     }
 
     public function unfollow($user_id_followed) {

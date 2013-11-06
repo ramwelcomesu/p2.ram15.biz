@@ -3,14 +3,8 @@ class users_controller extends base_controller {
 
     public function __construct() {
         parent::__construct();
-        //echo "users_controller construct called<br><br>";
     } 
 
-    public function index() {
-        echo "This is the index page";
-    }
-
-       
 
     public function signup($error = NULL) {
         # Setup view
@@ -26,43 +20,33 @@ class users_controller extends base_controller {
 
     public function p_signup() {
         # Dump out the results of POST to see what the form submitted
-      
+        # check for empty fields and redirect.
         if(empty($_POST['first_name']) or empty($_POST['last_name']) or empty($_POST['email']) or empty($_POST['password'])) {
-        //if($_POST['first_name'] = '' || $_POST['last_name'] = '' || $_POST['email'] = '' || $_POST['password'] = '' ) {
-               //print_r($_POST['first_name']);
             # Send them back to the login page
             Router::redirect("/users/signup/error");
-            //   echo 'Please fill all fields and submit again'; 
         } 
         else {
-        //     echo '<pre>';
-          //  print_r($_POST);
-         // echo '</pre>'; 
-       //Router::redirect("/users/login/error")
-        
-    
+            # More data we want stored with the user
+            $_POST['created']  = Time::now();
+            $_POST['modified'] = Time::now();
 
-        # More data we want stored with the user
-        $_POST['created']  = Time::now();
-        $_POST['modified'] = Time::now();
+            # Encrypt the password  
+            $_POST['password'] = sha1(PASSWORD_SALT.$_POST['password']);            
 
-        # Encrypt the password  
-        $_POST['password'] = sha1(PASSWORD_SALT.$_POST['password']);            
+            # Create an encrypted token via their email address and a random string
+            $_POST['token'] = sha1(TOKEN_SALT.$_POST['email'].Utils::generate_random_string()); 
 
-        # Create an encrypted token via their email address and a random string
-        $_POST['token'] = sha1(TOKEN_SALT.$_POST['email'].Utils::generate_random_string()); 
+            # Insert this user into the database
+            $user_id = DB::instance(DB_NAME)->insert('users', $_POST);
 
-        # Insert this user into the database
-        $user_id = DB::instance(DB_NAME)->insert('users', $_POST);
-
-        # For now, just confirm they've signed up - 
-        # You should eventually make a proper View for this
-       // echo 'You\'re signed up'; 
-       // # Send them back to the login page
-        Router::redirect("/users/signupyes");
+            # For now, just confirm they've signed up - 
+            # You should eventually make a proper View for this
+            # Send them back to the Signup confirmation page
+            Router::redirect("/users/signupyes");
         }
     }
    
+   # For Signup/ profile edit confirmation
    public function signupyes() {
         # Setup view
         $this->template->content = View::instance('v_users_signupyes');
@@ -72,7 +56,7 @@ class users_controller extends base_controller {
         echo $this->template;
     }
 
-
+    # Login page
     public function login($error = NULL) {
 
         # Setup view
@@ -84,17 +68,15 @@ class users_controller extends base_controller {
 
         # Render template
         echo $this->template;
-
     }
 
 
-
     public function p_login() {
-
+        # check for blank fields
         if(empty($_POST['email']) or empty($_POST['password'])) {
        
             Router::redirect("/users/login/error");
-                //   echo 'Please fill all fields and submit again'; 
+                
         } 
         else {
 
@@ -141,41 +123,34 @@ class users_controller extends base_controller {
     }
 
 
-       public function profile($error = NULL) {
+    public function profile($error = NULL) {
 
-            # If user is blank, they're not logged in; redirect them to the login page
-            if(!$this->user) {
-                Router::redirect('/users/login');
-            }
-
-            # If they weren't redirected away, continue:
-            
-            # Setup view
-            $this->template->content = View::instance('v_users_profile');
-            $this->template->title   = "Profile of".$this->user->first_name;
-            
-            # Pass error data to the view
-            $this->template->content->error = $error;
-            
-            # Render template
-            echo $this->template;
+        # If user is blank, they're not logged in; redirect them to the login page
+        if(!$this->user) {
+            Router::redirect('/users/login');
         }
 
+        # If they weren't redirected away, continue:
+        # Setup view
+        $this->template->content = View::instance('v_users_profile');
+        $this->template->title   = "Profile of".$this->user->first_name;
+            
+        # Pass error data to the view
+        $this->template->content->error = $error;
+            
+        # Render template
+        echo $this->template;
+    }
+    # This is to allow current logged in user to edit his profile.
+    #This is one of the extra (+1) feature
     public function p_profile() {
         # Dump out the results of POST to see what the form submitted
-      
+        # Blank fields error check
         if(empty($_POST['first_name']) or empty($_POST['last_name']) or empty($_POST['email']) or empty($_POST['password'])) {
             Router::redirect("/users/profile/error");
-            //   echo 'Please fill all fields and submit again'; 
         } 
         else {
-            //     echo '<pre>';
-              //  print_r($_POST);
-             // echo '</pre>'; 
-           //Router::redirect("/users/login/error")
-             
-
-            # More data we want stored with the user
+             # More data we want stored with the user
             //$_POST['created']  = Time::now();
             $_POST['modified'] = Time::now();
 
@@ -190,14 +165,11 @@ class users_controller extends base_controller {
 
             # For now, just confirm they've signed up - 
             # You should eventually make a proper View for this
-           // echo 'You\'re signed up'; 
-           // # Send them back to the login page
+            // # Send them back to the profile edit success confirmation page
             Router::redirect("/users/signupyes");
         }
     }
    
-  
-
     public function logout() {
 
         # Generate and save a new token for next login

@@ -12,7 +12,7 @@
 
 	<body id='wrapper'>  
 
-	    <div id='header'>
+	    <div id='header'> <!-- Common Page Header -->
 	    	
 	    	<h2> MiniTwitter </h2>
 
@@ -24,14 +24,14 @@
 
 	    <br>
 
-	    <div id='menu'>
+	    <div id='menu'> <!-- cascading menu based on users login status -->
 	    	<ul>
 		        <li><a href='/'>Home</a></li>
 
 		        <!-- Menu for users who are logged in -->
 		        <?php if($user): ?>
 
-		            <li><a href='/posts/index'>View Postings</a></li>
+		            <li><a href='/posts/index'>View all Postings</a></li>
 		            <li><a href='/posts/add'>Add a new Post</a></li>
 		            <li><a href='/posts/users'>Manage my followings</a></li>
 		            <li><a href='/users/profile'>Edit my profile</a></li>
@@ -47,7 +47,7 @@
 	    </div>
 		<br>
 	  
-	    <div id = 'content'>
+	    <div id = 'pcontent'> <!-- Actual content of the page- forms, views etc -->
 
 	    	<?php if(isset($content)) echo $content; ?>
 
