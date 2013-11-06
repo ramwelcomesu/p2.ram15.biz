@@ -13,10 +13,13 @@
 	<body id='wrapper'>  
 
 	    <div id='header'>
-	    	<h1> Mini Twitter </h1>
-	    	<?php if($user): ?>
-	    		<h4>Hello !! <?php $first_name ?> </h4>
-	    	<?php endif; ?>
+	    	
+	    	<h2> MiniTwitter </h2>
+
+	    	<?php if(!empty($user->first_name)){ ?>
+		    	<?php echo 'Hello!!   '.$user->first_name; ?>
+		    	<?php echo '   '.$user->last_name; ?>
+		    <?php } ?>
 	    </div>
 
 	    <br>
@@ -42,9 +45,8 @@
 		        <?php endif; ?>
 	    	</ul>
 	    </div>
-
-	    <br>
-
+		<br>
+	  
 	    <div id = 'content'>
 
 	    	<?php if(isset($content)) echo $content; ?>

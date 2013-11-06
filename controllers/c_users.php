@@ -12,10 +12,13 @@ class users_controller extends base_controller {
 
        
 
-    public function signup() {
+    public function signup($error = NULL) {
         # Setup view
         $this->template->content = View::instance('v_users_signup');
         $this->template->title   = "Sign Up";
+        
+        # Pass error data to the view
+        $this->template->content->error = $error;
 
         # Render template
         echo $this->template;
@@ -23,9 +26,21 @@ class users_controller extends base_controller {
 
     public function p_signup() {
         # Dump out the results of POST to see what the form submitted
-        //echo '<pre>';
-        //print_r($_POST);
-        //echo '</pre>';   
+      
+        if(empty($_POST['first_name']) or empty($_POST['last_name']) or empty($_POST['email']) or empty($_POST['password'])) {
+        //if($_POST['first_name'] = '' || $_POST['last_name'] = '' || $_POST['email'] = '' || $_POST['password'] = '' ) {
+               //print_r($_POST['first_name']);
+            # Send them back to the login page
+            Router::redirect("/users/signup/error");
+            //   echo 'Please fill all fields and submit again'; 
+        } 
+        else {
+        //     echo '<pre>';
+          //  print_r($_POST);
+         // echo '</pre>'; 
+       //Router::redirect("/users/login/error")
+        
+    
 
         # More data we want stored with the user
         $_POST['created']  = Time::now();
@@ -42,11 +57,20 @@ class users_controller extends base_controller {
 
         # For now, just confirm they've signed up - 
         # You should eventually make a proper View for this
-        echo 'You\'re signed up';  
+       // echo 'You\'re signed up'; 
        // # Send them back to the login page
-        //Router::redirect("/users/login/error");
+        Router::redirect("/users/signupyes");
+        }
     }
    
+   public function signupyes() {
+        # Setup view
+        $this->template->content = View::instance('v_users_signupyes');
+        $this->template->title   = "Sign Up Success";
+        
+        # Render template
+        echo $this->template;
+    }
 
 
     public function login($error = NULL) {
@@ -67,71 +91,57 @@ class users_controller extends base_controller {
 
     public function p_login() {
 
-        # Sanitize the user entered data to prevent any funny-business (re: SQL Injection Attacks)
-        $_POST = DB::instance(DB_NAME)->sanitize($_POST);
-
-        # Hash submitted password so we can compare it against one in the db
-        $_POST['password'] = sha1(PASSWORD_SALT.$_POST['password']);
-
-        # Search the db for this email and password
-        # Retrieve the token if it's available
-        $q = "SELECT token 
-            FROM users 
-            WHERE email = '".$_POST['email']."' 
-            AND password = '".$_POST['password']."'";
-
-        $token = DB::instance(DB_NAME)->select_field($q);
-
-        # If we didn't find a matching token in the database, it means login failed
-        if(!$token) {
-
-            # Send them back to the login page
+        if(empty($_POST['email']) or empty($_POST['password'])) {
+       
             Router::redirect("/users/login/error");
+                //   echo 'Please fill all fields and submit again'; 
+        } 
+        else {
 
-        # But if we did, login succeeded! 
-        } else {
+            # Sanitize the user entered data to prevent any funny-business (re: SQL Injection Attacks)
+            $_POST = DB::instance(DB_NAME)->sanitize($_POST);
 
-            /* 
-            Store this token in a cookie using setcookie()
-            Important Note: *Nothing* else can echo to the page before setcookie is called
-            Not even one single white space.
-            param 1 = name of the cookie
-            param 2 = the value of the cookie
-            param 3 = when to expire
-            param 4 = the path of the cooke (a single forward slash sets it for the entire domain)
-            */
-            setcookie("token", $token, strtotime('+1 year'), '/');
+            # Hash submitted password so we can compare it against one in the db
+            $_POST['password'] = sha1(PASSWORD_SALT.$_POST['password']);
 
-            # Send them to the main page - or whever you want them to go
-            Router::redirect("/posts/index");
+            # Search the db for this email and password
+            # Retrieve the token if it's available
+            $q = "SELECT token 
+                FROM users 
+                WHERE email = '".$_POST['email']."' 
+                AND password = '".$_POST['password']."'";
 
+            $token = DB::instance(DB_NAME)->select_field($q);
+
+            # If we didn't find a matching token in the database, it means login failed
+            if(!$token) {
+
+                # Send them back to the login page
+                Router::redirect("/users/login/error");
+
+            # But if we did, login succeeded! 
+            } else {
+
+                /* 
+                Store this token in a cookie using setcookie()
+                Important Note: *Nothing* else can echo to the page before setcookie is called
+                Not even one single white space.
+                param 1 = name of the cookie
+                param 2 = the value of the cookie
+                param 3 = when to expire
+                param 4 = the path of the cooke (a single forward slash sets it for the entire domain)
+                */
+                setcookie("token", $token, strtotime('+1 year'), '/');
+
+                # Send them to the main page - or whever you want them to go
+                Router::redirect("/posts/index");
+
+            }
         }
     }
 
 
-
-    //public function profile($user_name = NULL) {
-
-
-      /* # Create a new View instance
-        $view = View::instance('v_users_profile');
-
-        # Pass information to the view instance
-        $view->user_name = $user_name;
-
-        # Render View
-        echo $view;
-        */
-   
-      /*  if($user_name == NULL) {
-            echo "No user specified";
-        }
-        else {
-            echo "This is the profile for ".$user_name;
-        } */
-    //}
-
-        public function profile() {
+       public function profile($error = NULL) {
 
             # If user is blank, they're not logged in; redirect them to the login page
             if(!$this->user) {
@@ -143,26 +153,50 @@ class users_controller extends base_controller {
             # Setup view
             $this->template->content = View::instance('v_users_profile');
             $this->template->title   = "Profile of".$this->user->first_name;
-
+            
+            # Pass error data to the view
+            $this->template->content->error = $error;
+            
             # Render template
             echo $this->template;
         }
 
+    public function p_profile() {
+        # Dump out the results of POST to see what the form submitted
+      
+        if(empty($_POST['first_name']) or empty($_POST['last_name']) or empty($_POST['email']) or empty($_POST['password'])) {
+            Router::redirect("/users/profile/error");
+            //   echo 'Please fill all fields and submit again'; 
+        } 
+        else {
+            //     echo '<pre>';
+              //  print_r($_POST);
+             // echo '</pre>'; 
+           //Router::redirect("/users/login/error")
+             
 
+            # More data we want stored with the user
+            //$_POST['created']  = Time::now();
+            $_POST['modified'] = Time::now();
 
-    public function db_test(){
-        # Our SQL command
-        $q = "INSERT INTO users SET 
-        first_name = 'Sam', 
-        last_name = 'Seaborn',
-        email = 'seaborn@whitehouse.gov'";
-        echo $q;
+            # Encrypt the password  
+            $_POST['password'] = sha1(PASSWORD_SALT.$_POST['password']);            
 
-        # Run the command
-        echo DB::instance(DB_NAME)->query($q);
+            # Create an encrypted token via their email address and a random string
+            $_POST['token'] = sha1(TOKEN_SALT.$_POST['email'].Utils::generate_random_string()); 
 
+            # Insert this user into the database
+            $user_id = DB::instance(DB_NAME)->update('users', $_POST, "WHERE user_id = {$_POST['user_id']}");
+
+            # For now, just confirm they've signed up - 
+            # You should eventually make a proper View for this
+           // echo 'You\'re signed up'; 
+           // # Send them back to the login page
+            Router::redirect("/users/signupyes");
+        }
     }
-
+   
+  
 
     public function logout() {
 

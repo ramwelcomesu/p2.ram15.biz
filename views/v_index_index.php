@@ -1,13 +1,22 @@
+
+<h3>Hello, welcome to MiniTwitter!!</h1>
+
 <p>
-	Hello World! You have successfully spawned a new application.
+MiniTwitter is a free online social networking and microblogging service that enables users to send and read "minitweets", which are text messages. 
 </p>
 
 <p>
-	This message is being triggered via the c_index.php controller, within the index() method.
+Registered users can read their following people's minitweets and post their own minitweets. Users access minitwitter through the website interface 24/7 for free. 
 </p>
 
 <p>
-	<strong>Since everything is in working order, you should now delete <?php echo APP_PATH?>diagnostics.php</strong>
+Minitwitter website was created on Nov. 2013 as part of the second assignment of CSCIE E15 course at Harvard Extension School.
 </p>
 
-<h1>Welcome to <?=APP_NAME?> <?php if($user) echo ', '.$user->first_name; ?></h1>
+<p>
+We hope our service rapidly gain worldwide popularity with huge number of signups and lots of tweets. 
+</p>
+
+<p>
+Our goal is to be one in the top hundred most visited websites.
+</p>
