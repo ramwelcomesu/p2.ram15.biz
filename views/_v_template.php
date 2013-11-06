@@ -32,9 +32,9 @@
 		        <?php if($user): ?>
 
 		            <li><a href='/posts/index'>View all Postings</a></li>
-		            <li><a href='/posts/add'>Add a new Post</a></li>
+		            <li><a href='/posts/add'>Add new Post</a></li>
 		            <li><a href='/posts/users'>Manage my followings</a></li>
-		            <li><a href='/users/profile'>Edit my profile</a></li>
+		            <li><a href='/users/profile'>Edit profile</a></li>
 		            <li><a href='/users/logout'>Logout</a></li>
 
 		        <!-- Menu options for users who are not logged in -->

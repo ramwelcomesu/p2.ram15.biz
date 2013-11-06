@@ -1,5 +1,12 @@
 
 <!-- This is the landing page content -->
+<h2> Below listed are my +1 features</h2>
+<p>
+	1) Edit profile cabability for the currenly logged in user.
+	<br>
+	2) Listing current logged in user's postings on the "Add new Posting" page
+</p>
+
 <h3>Hello, welcome to MiniTwitter!!</h1>
 
 <p>
